@@ -1,0 +1,59 @@
+```{r}
+data <- read.csv(file.choose(),header = T)
+head(data)
+```
+# Data Cleaning
+```{r}
+a<- sum(is.na(data))
+a
+# There is total 158 rows which consist of NA values
+```
+```{r}
+Ndata <- na.omit(data)
+b<- sum(is.na(Ndata))
+#b
+#  Removed all the Row containing "NA" values
+#summary(Ndata)
+#Ndata
+a <- Ndata[31:60,]
+a
+```
+# Data Visulization
+
+#LM Module Training
+```{r}
+
+```
+```{r}
+S1 <- sample(Ndata, size = 100,replace = TRUE)
+lmOut1<-lm(formula=cost~age+children+bmi+smoker+exercise+hypertension,data=S1)
+#lmOut1
+summary(lmOut1)
+```
+#Predict
+```{r}
+#plot(lmOut1)
+Tdata <- read.csv(file.choose(),header = T)
+Tdata$Expectedcost <- predict(lmOut1,Tdata)
+Tdata
+```
+```{r}
+#install.packages('e1071')
+#install.packages("rpart")
+#install.packages("rpart.plot")
+library(e1071)
+library(rpart)
+library(rpart.plot)
+tree <- rpart(cost~., data = S1,method = "class")
+rpart.plot(tree)
+```
+```{r}
+Tdata <- read.csv(file.choose(),header = T)
+Tdata$cost <- 0
+```
+```{r}
+summary(Tdata)
+Pred<-predict(tree,Tdata)
+confMatrix <- table(Pred,Tdata$cost)
+
+```
